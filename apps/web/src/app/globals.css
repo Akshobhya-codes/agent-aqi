@@ -1,0 +1,672 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0d1117;
+  --surface:  #161b22;
+  --border:   #30363d;
+  --accent:   #58a6ff;
+  --green:    #3fb950;
+  --red:      #f85149;
+  --yellow:   #d29922;
+  --muted:    #8b949e;
+  --text:     #c9d1d9;
+  --text-hi:  #f0f6fc;
+  --radius:   8px;
+  --font:     'Inter', system-ui, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+nav .brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-hi);
+  letter-spacing: -0.02em;
+}
+
+nav .brand span { color: var(--accent); }
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+h1 { font-size: 1.5rem; font-weight: 700; color: var(--text-hi); margin-bottom: 0.5rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: var(--text-hi); margin-bottom: 1rem; }
+h3 { font-size: 1rem; font-weight: 600; color: var(--text-hi); margin-bottom: 0.5rem; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-green  { background: rgba(63,185,80,.15); color: var(--green); }
+.badge-red    { background: rgba(248,81,73,.15);  color: var(--red);  }
+.badge-yellow { background: rgba(210,153,34,.15); color: var(--yellow); }
+.badge-blue   { background: rgba(88,166,255,.15); color: var(--accent); }
+
+.score-ring {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  font-weight: 700;
+  border: 3px solid var(--accent);
+  color: var(--text-hi);
+}
+
+.score-ring.high  { border-color: var(--green); }
+.score-ring.mid   { border-color: var(--yellow); }
+.score-ring.low   { border-color: var(--red); }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th, td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+th { color: var(--muted); font-weight: 500; }
+
+tr:last-child td { border-bottom: none; }
+
+tr:hover td { background: rgba(255,255,255,.03); }
+
+button, .btn {
+  cursor: pointer;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius);
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+
+button:hover, .btn:hover { opacity: 0.85; }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-ghost   { background: transparent; border: 1px solid var(--border); color: var(--text); }
+
+select, input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 0.5rem 0.75rem;
+  font-size: 13px;
+  outline: none;
+}
+
+select:focus, input:focus { border-color: var(--accent); }
+
+.event-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 340px;
+  overflow-y: auto;
+  font-size: 12px;
+  font-family: 'Fira Code', monospace;
+}
+
+.event-row {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--bg);
+  border-radius: 4px;
+  border-left: 3px solid transparent;
+  animation: fadeIn 0.25s ease;
+}
+
+.event-row.queued    { border-color: var(--muted); }
+.event-row.running   { border-color: var(--yellow); }
+.event-row.fulfilled { border-color: var(--green); }
+.event-row.failed    { border-color: var(--red); }
+
+.event-time { color: var(--muted); flex-shrink: 0; }
+.event-type { font-weight: 700; width: 72px; flex-shrink: 0; }
+.event-type.queued    { color: var(--muted); }
+.event-type.running   { color: var(--yellow); }
+.event-type.fulfilled { color: var(--green); }
+.event-type.failed    { color: var(--red); }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+@media (max-width: 700px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+.bar-wrap {
+  background: var(--bg);
+  border-radius: 99px;
+  height: 8px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--accent);
+  transition: width 0.5s ease;
+}
+
+.muted { color: var(--muted); }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.rank-num {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--muted);
+  width: 2.5rem;
+  flex-shrink: 0;
+}
+
+.rank-num.gold   { color: #f0c040; }
+.rank-num.silver { color: #a8b2c0; }
+.rank-num.bronze { color: #cd7f32; }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.gap-1 { gap: 0.5rem; }
+.gap-2 { gap: 1rem; }
+.gap-3 { gap: 1.5rem; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.w-full { width: 100%; }
+.text-right { text-align: right; }
+.font-mono { font-family: 'Fira Code', monospace; }
+
+/* ─── Arena ───────────────────────────────────────────────────────────────── */
+
+.agent-card {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            6px;
+  padding:        1rem 0.85rem;
+  background:     var(--surface);
+  border:         2px solid var(--border);
+  border-radius:  var(--radius);
+  cursor:         pointer;
+  transition:     border-color 0.15s, box-shadow 0.15s;
+  min-width:      130px;
+  flex:           1 1 130px;
+  text-align:     center;
+}
+
+.agent-card:hover {
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.battle-type-btn {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            3px;
+  padding:        0.6rem 0.85rem;
+  border-radius:  var(--radius);
+  cursor:         pointer;
+  transition:     background 0.12s, border-color 0.12s;
+  min-width:      110px;
+  flex:           1 1 110px;
+}
+
+/* ─── Confetti ────────────────────────────────────────────────────────────── */
+
+@keyframes confetti-fall {
+  0%   { transform: translateY(0) rotate(0deg);    opacity: 1; }
+  100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+}
+
+/* ─── Swap detail panel (expandable row) ──────────────────────────────────── */
+
+.detail-panel {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 1rem 1.25rem;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 2rem;
+}
+
+@media (max-width: 700px) {
+  .detail-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Arena game styles ───────────────────────────────────────────────────── */
+
+/* Mobile-first nav + main */
+@media (max-width: 640px) {
+  nav { gap: 0.75rem; padding: 0.6rem 1rem; font-size: 12px; flex-wrap: wrap; }
+  main { padding: 1rem; }
+}
+
+/* Policy chips on agent cards */
+.policy-chip {
+  display:        inline-flex;
+  align-items:    center;
+  gap:            3px;
+  padding:        2px 7px;
+  border-radius:  99px;
+  font-size:      10px;
+  font-weight:    600;
+  letter-spacing: 0.02em;
+  border:         1px solid;
+  white-space:    nowrap;
+}
+
+/* Matchup selector buttons */
+.matchup-btn {
+  display:        flex;
+  align-items:    center;
+  gap:            6px;
+  padding:        0.45rem 0.85rem;
+  border-radius:  var(--radius);
+  border:         1px solid var(--border);
+  background:     transparent;
+  color:          var(--text);
+  cursor:         pointer;
+  font-size:      12px;
+  font-weight:    600;
+  transition:     background 0.12s, border-color 0.12s, color 0.12s;
+  white-space:    nowrap;
+}
+.matchup-btn.active {
+  border-color: var(--accent);
+  background:   rgba(88,166,255,.12);
+  color:        var(--accent);
+}
+.matchup-btn:hover:not(.active) {
+  background: rgba(255,255,255,0.04);
+}
+
+/* Lane progress track + bar */
+.lane-track {
+  height:        10px;
+  background:    rgba(255,255,255,0.07);
+  border-radius: 99px;
+  overflow:      hidden;
+  margin:        10px 0 6px;
+}
+.lane-bar {
+  height:     100%;
+  border-radius: 99px;
+  transition: width 0.5s ease, background 0.3s;
+}
+.lane-bar.s-pending   { background: var(--muted);  width: 0%;   }
+.lane-bar.s-running   { background: var(--yellow); width: 38%;  animation: lane-pulse 1.2s ease-in-out infinite; }
+.lane-bar.s-fulfilled { background: var(--green);  width: 100%; }
+.lane-bar.s-failed    { background: var(--red);    width: 100%; }
+
+@keyframes lane-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+/* Spectate row — recent battles list */
+.spectate-row {
+  display:        flex;
+  align-items:    center;
+  gap:            10px;
+  padding:        0.55rem 0.75rem;
+  border-radius:  var(--radius);
+  border:         1px solid transparent;
+  text-decoration: none;
+  color:          var(--text);
+  transition:     background 0.1s, border-color 0.1s;
+}
+.spectate-row:hover {
+  background:    rgba(255,255,255,0.04);
+  border-color:  var(--border);
+  text-decoration: none;
+}
+
+/* Winner banner */
+.winner-banner {
+  text-align:   center;
+  padding:      1.25rem;
+  background:   rgba(63,185,80,.08);
+  border:       1px solid var(--green);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  animation:    fadeIn 0.4s ease;
+}
+
+/* ─── Prediction panel ────────────────────────────────────────────────────── */
+
+/* Agent selector buttons inside PredictionPanel */
+.prediction-agent-btn {
+  background:    var(--bg);
+  border:        2px solid var(--border);
+  border-radius: var(--radius);
+  padding:       0.65rem 0.5rem;
+  cursor:        pointer;
+  text-align:    center;
+  transition:    border-color 0.15s, background 0.15s;
+  position:      relative;
+  overflow:      hidden;
+}
+.prediction-agent-btn:disabled {
+  cursor: default;
+}
+.prediction-agent-btn:not(:disabled):hover {
+  background: rgba(255,255,255,0.04);
+}
+
+/* Narration banner fade-in is covered by the global @keyframes fadeIn */
+
+/* Tight number input for stake amount */
+input[type="number"].stake-input {
+  width:      100px;
+  font-size:  12px;
+  padding:    0.35rem 0.6rem;
+}
+
+/* Small pulse-slow animation used on "Live ●" badge */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* ─── Calldata hex preview — monospace code block ───────────────────────── */
+
+/* Calldata hex preview — monospace code block */
+code.calldata-preview {
+  display: block;
+  font-family: 'Fira Code', monospace;
+  font-size: 10px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.4rem 0.6rem;
+  word-break: break-all;
+  white-space: pre-wrap;
+  flex: 1;
+  min-width: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   VISUAL OVERHAUL — v2 enhancements
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Gradient headline text ─────────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #58a6ff 0%, #bc8cff 55%, #ff7b72 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Stat chip (small metric box) ─────────────────────────────────────────── */
+.stat-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0.55rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+/* ─── Glow primary button ────────────────────────────────────────────────── */
+.btn-glow {
+  box-shadow: 0 0 18px rgba(88,166,255,.30), 0 0 40px rgba(88,166,255,.10);
+  transition: box-shadow 0.2s, opacity 0.15s;
+}
+.btn-glow:hover:not(:disabled) {
+  box-shadow: 0 0 26px rgba(88,166,255,.50), 0 0 60px rgba(88,166,255,.20);
+  opacity: 1 !important;
+}
+
+/* ─── Progress bar ──────────────────────────────────────────────────────────── */
+.progress-track {
+  height: 4px;
+  background: rgba(255,255,255,.07);
+  border-radius: 99px;
+  overflow: hidden;
+  width: 100%;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--green));
+  border-radius: 99px;
+  transition: width 0.35s ease;
+}
+
+/* ─── Network pill ──────────────────────────────────────────────────────────── */
+.network-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: default;
+}
+.network-pill.mainnet {
+  background: rgba(63,185,80,.12);
+  border: 1px solid rgba(63,185,80,.4);
+  color: var(--green);
+}
+.network-pill.testnet {
+  background: rgba(210,153,34,.12);
+  border: 1px solid rgba(210,153,34,.4);
+  color: var(--yellow);
+}
+
+/* ─── Interactive card (hover glow) ─────────────────────────────────────────── */
+.card-interactive {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.card-interactive:hover {
+  border-color: rgba(88,166,255,.3);
+  box-shadow: 0 0 20px rgba(88,166,255,.06);
+}
+
+/* ─── Demo done banner ───────────────────────────────────────────────────────── */
+.demo-done-banner {
+  background: rgba(63,185,80,.06);
+  border: 1px solid rgba(63,185,80,.3);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+
+/* ─── Section label (caps micro-label above a block) ────────────────────────── */
+.section-label {
+  font-size: 9px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* ─── Bounty partner badges ──────────────────────────────────────────────────── */
+.bounty-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.bounty-uniswap   { background: rgba(255,0,128,.08);   color: #ff69b4; border: 1px solid rgba(255,0,128,.25); }
+.bounty-quicknode { background: rgba(63,185,80,.08);   color: var(--green); border: 1px solid rgba(63,185,80,.25); }
+.bounty-blockade  { background: rgba(188,140,255,.08); color: #bc8cff; border: 1px solid rgba(188,140,255,.25); }
+
+/* ─── Highlighted number ─────────────────────────────────────────────────────── */
+.num-big {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-hi);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Dimmed card overlay (when disabled/inactive) ──────────────────────────── */
+.card-dim {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* ─── Quote grid cells ───────────────────────────────────────────────────────── */
+.quote-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.quote-cell {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+}
+
+/* ─── Agent policy comparison table ─────────────────────────────────────────── */
+.policy-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  font-size: 12px;
+  align-items: center;
+}
+.policy-row:last-child { border-bottom: none; }
+.policy-row-header {
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ─── Scan-line animation for terminal-feel feeds ────────────────────────────── */
+@keyframes scanline {
+  0%   { transform: translateY(-100%); opacity: 0.04; }
+  100% { transform: translateY(100vh); opacity: 0.04; }
+}
+
+/* ─── Subtle card glow on render (new item flash) ────────────────────────────── */
+@keyframes cardFlash {
+  0%   { box-shadow: 0 0 0 2px rgba(88,166,255,.5); }
+  100% { box-shadow: 0 0 0 0px rgba(88,166,255,0);  }
+}
+.flash-in {
+  animation: fadeIn 0.25s ease, cardFlash 0.7s ease forwards;
+}
+
+/* ─── Large hero CTA row ─────────────────────────────────────────────────────── */
+.hero-cta-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 0 auto;
+}
+
+/* ─── Nav active link indicator ─────────────────────────────────────────────── */
+nav a.active-link {
+  color: var(--text-hi);
+  position: relative;
+}
+nav a.active-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 99px;
+}
+
+/* ─── Error helper box ────────────────────────────────────────────────────────── */
+.error-box {
+  background: rgba(248,81,73,.08);
+  border: 1px solid var(--red);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  font-size: 12px;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+.error-box strong { color: var(--red); }
+
+/* ─── Hint box (info style) ──────────────────────────────────────────────────── */
+.hint-box {
+  background: rgba(88,166,255,.06);
+  border: 1px solid rgba(88,166,255,.25);
+  border-radius: var(--radius);
+  padding: 0.65rem 1rem;
+  font-size: 12px;
+  color: var(--text);
+}
+.hint-box strong { color: var(--accent); }

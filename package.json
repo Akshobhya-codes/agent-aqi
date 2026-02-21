@@ -1,0 +1,21 @@
+{
+  "name": "ethdenver-agent-aqi",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "predev": "npm run build:shared",
+    "dev": "concurrently -n api,web -c cyan,magenta \"npm run dev -w api\" \"npm run dev -w web\"",
+    "dev:api": "npm run build:shared && npm run dev -w api",
+    "dev:web": "npm run dev -w web",
+    "build:shared": "npm run build -w @agent-aqi/shared",
+    "build": "npm run build:shared && npm run build -w api && npm run build -w web"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.3.3"
+  }
+}
