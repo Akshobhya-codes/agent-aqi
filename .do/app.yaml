@@ -10,7 +10,7 @@ services:
       deploy_on_push: true
     # Build from monorepo root so shared package resolves correctly
     source_dir: /
-    build_command: npm ci && npm run build:shared && npm run build -w api
+    build_command: npm install && npm run build:shared && npm run build -w api
     run_command: node apps/api/dist/index.js
     environment_slug: node-js
     instance_count: 1
@@ -80,8 +80,8 @@ services:
       branch: main
       deploy_on_push: true
     source_dir: /
-    build_command: npm ci && npm run build:shared && npm run build -w web
-    run_command: node apps/web/node_modules/.bin/next start apps/web
+    build_command: npm install && npm run build:shared && npm run build -w web
+    run_command: npm run start -w web
     environment_slug: node-js
     instance_count: 1
     instance_size_slug: basic-xxs
