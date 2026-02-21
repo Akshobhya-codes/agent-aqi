@@ -1,0 +1,99 @@
+name: agent-aqi
+region: nyc
+
+# ── API (Express + TypeScript) ────────────────────────────────────────────────
+services:
+  - name: api
+    github:
+      repo: Akshobhya-codes/agent-aqi
+      branch: main
+      deploy_on_push: true
+    # Build from monorepo root so shared package resolves correctly
+    source_dir: /
+    build_command: npm ci && npm run build:shared && npm run build -w api
+    run_command: node apps/api/dist/index.js
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs   # $5/mo — upgrade to basic-xs for production
+    health_check:
+      http_path: /health
+    envs:
+      # ── Public / non-secret ──────────────────────────────────────────────────
+      - key: NODE_ENV
+        value: production
+      - key: EXECUTION_MODE
+        value: quote
+      - key: QUICKNODE_NETWORK
+        value: base-sepolia
+      - key: CHAIN_ID
+        value: "84532"
+      - key: BASE_RPC_URL
+        value: https://sepolia.base.org
+      - key: SWAP_SENDER_ADDRESS
+        value: "0x0000000000000000000000000000000000000001"
+      - key: BLOCKADE_LABS_STYLE_ID
+        value: "67"
+      - key: AUTH_TOKEN_TTL_HOURS
+        value: "24"
+      - key: X402_ENABLED
+        value: "false"
+      - key: X402_DEMO_PROOF
+        value: letmein
+      - key: X402_RECEIVER_ADDRESS
+        value: "0x0000000000000000000000000000000000000000"
+      - key: X402_AMOUNT
+        value: "0.001"
+      - key: PREDICTION_ENABLED
+        value: "false"
+      - key: PREDICTION_CONTRACT_ADDRESS
+        value: "0xd1D26AeD1381Bc9463782D60F8166A591Bf9288F"
+      # Injected by DO — the web app's public URL for CORS / SIWE origin
+      - key: APP_ORIGIN
+        value: ${web.PUBLIC_URL}
+      # ── Secrets — set values in DO dashboard after first deploy ──────────────
+      - key: QUICKNODE_STREAMS_WEBHOOK_SECRET
+        type: SECRET
+        value: REPLACE_IN_DO_DASHBOARD
+      - key: QUICKNODE_STREAM_ID
+        type: SECRET
+        value: REPLACE_IN_DO_DASHBOARD
+      - key: UNISWAP_API_KEY
+        type: SECRET
+        value: REPLACE_IN_DO_DASHBOARD
+      - key: AGENT_PRIVATE_KEY
+        type: SECRET
+        value: REPLACE_IN_DO_DASHBOARD
+      - key: BLOCKADE_LABS_API_KEY
+        type: SECRET
+        value: REPLACE_IN_DO_DASHBOARD
+      - key: JWT_SECRET
+        type: SECRET
+        value: REPLACE_IN_DO_DASHBOARD
+      - key: ADMIN_TOKEN
+        type: SECRET
+        value: REPLACE_IN_DO_DASHBOARD
+
+# ── Web (Next.js) ─────────────────────────────────────────────────────────────
+  - name: web
+    github:
+      repo: Akshobhya-codes/agent-aqi
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    build_command: npm ci && npm run build:shared && npm run build -w web
+    run_command: node apps/web/node_modules/.bin/next start apps/web
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    envs:
+      # Points the frontend at the API service — DO injects the live URL
+      - key: NEXT_PUBLIC_API_URL
+        value: ${api.PUBLIC_URL}
+      - key: NEXT_PUBLIC_PREDICTION_ENABLED
+        value: "false"
+      - key: NEXT_PUBLIC_PREDICTION_CONTRACT_ADDRESS
+        value: "0xd1D26AeD1381Bc9463782D60F8166A591Bf9288F"
+      - key: NEXT_PUBLIC_APP_DOMAIN
+        value: ${APP_DOMAIN}
+      - key: NEXT_PUBLIC_APP_URL
+        value: ${web.PUBLIC_URL}
